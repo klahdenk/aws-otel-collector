@@ -57,6 +57,7 @@ all-srcs:
 .PHONY: build
 build: install-tools lint
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/aoc_darwin_amd64 ./cmd/awscollector
+	GOOS=darwin GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/aoc_darwin_aarch64 ./cmd/awscollector
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_x86_64 ./cmd/awscollector
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_aarch64 ./cmd/awscollector
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/aoc_windows_amd64 ./cmd/awscollector
@@ -64,6 +65,10 @@ build: install-tools lint
 .PHONY: amd64-build
 amd64-build: install-tools lint
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_x86_64 ./cmd/awscollector
+
+.PHONY: arm64-build
+arm64-build: install-tools lint
+	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_aarch64 ./cmd/awscollector
 
 # For building container image during development, no lint nor other platforms
 .PHONY: amd64-build-only
@@ -87,6 +92,10 @@ package-deb: build
 .PHONY: docker-build
 docker-build: 
 	docker build -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
+
+.PHONY: docker-build-arm64
+docker-build-arm64: 
+	docker build -t $(DOCKER_NAMESPACE)/$(COMPONENT)-arm64:$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile.arm64 .
 
 .PHONY: docker-push
 docker-push:
